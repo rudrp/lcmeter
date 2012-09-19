@@ -5834,6 +5834,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <instance part="GND2" gate="1" x="50.8" y="38.1"/>
 <instance part="FREQ_CON" gate="G$1" x="0" y="93.98"/>
 <instance part="OSC_OUT" gate="G$1" x="0" y="81.28"/>
+<instance part="IC1" gate="P" x="83.82" y="66.04"/>
 </instances>
 <busses>
 </busses>
@@ -5863,10 +5864,15 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="66.04" y1="43.18" x2="73.66" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="GND2" gate="1" pin="GND"/>
 <wire x1="50.8" y1="43.18" x2="50.8" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="73.66" y1="43.18" x2="119.38" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="73.66" y1="43.18" x2="88.9" y2="43.18" width="0.1524" layer="91"/>
 <junction x="73.66" y="43.18"/>
 <pinref part="R4" gate="G$1" pin="1"/>
+<wire x1="88.9" y1="43.18" x2="119.38" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="119.38" y1="45.72" x2="119.38" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="P" pin="GND"/>
+<wire x1="83.82" y1="58.42" x2="88.9" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="58.42" x2="88.9" y2="43.18" width="0.1524" layer="91"/>
+<junction x="88.9" y="43.18"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -5880,14 +5886,19 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="66.04" y1="93.98" x2="66.04" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="66.04" y1="96.52" x2="58.42" y2="96.52" width="0.1524" layer="91"/>
 <label x="58.42" y="96.52" size="1.778" layer="95"/>
-<wire x1="66.04" y1="96.52" x2="96.52" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="96.52" x2="88.9" y2="96.52" width="0.1524" layer="91"/>
 <junction x="66.04" y="96.52"/>
 <pinref part="R7" gate="G$1" pin="2"/>
+<wire x1="88.9" y1="96.52" x2="96.52" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="96.52" y1="96.52" x2="96.52" y2="93.98" width="0.1524" layer="91"/>
 <wire x1="96.52" y1="96.52" x2="119.38" y2="96.52" width="0.1524" layer="91"/>
 <junction x="96.52" y="96.52"/>
 <pinref part="R3" gate="G$1" pin="2"/>
 <wire x1="119.38" y1="96.52" x2="119.38" y2="93.98" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="P" pin="V+"/>
+<wire x1="83.82" y1="73.66" x2="88.9" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="73.66" x2="88.9" y2="96.52" width="0.1524" layer="91"/>
+<junction x="88.9" y="96.52"/>
 </segment>
 </net>
 <net name="C" class="0">
