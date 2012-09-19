@@ -1,2 +1,68 @@
-[ references ]
-http://www.kerrywong.com/2010/10/16/avr-lc-meter-with-frequency-measurement
+[ theory of operation ]
+
+first, the exact values of c_ref and l_ref are needed. they are assumed
+to be unknown, even if some values are chosen at circuit build time. a
+calibration phase is done. this phase aims at building a 2 equations 2
+unknown system. to do so, 2 frequencies are measured. it is known that
+the frequency of a LC circuit is determined by:
+f = 1 / (2 * pi * sqrt(l * c))
+
+a first frequency f_0 is measured with l_ref and c_ref
+f_0 = 1 / (2 * pi * sqrt(l_ref * c_ref))
+
+then, a second frequency f_1 is measured by putting a capacitor c_fixed
+in parallel with c_ref. c_fixed is a high precision capacitor, whose
+value is chosen to be 1000*10^-12 (1000pF):
+f_1 = 1 / (2 * pi * sqrt(l_ref * (c_ref + 10^-12)))
+note that the same could have been done with non coupled series inductors.
+(so, why do all the circuits use parallel caps? are high quality inductor
+less easy to find? less cheap? difficult to avoid magnetic coupling in
+small circuits?)
+
+thus, we have the following system:
+{
+f_0 = 1 / (2 * pi * sqrt(l_ref * c_ref))
+f_1 = 1 / (2 * pi * sqrt(l_ref * (c_ref + 10^-12)))
+}
+
+solving (expriming c_ref in function of l_ref then substituting) gives:
+{
+c_ref = (f_1^2 / (f_0^2 - f_1^2)) * 10^-9;
+l_ref = 1 / (4 * pi * c_ref * f_0^2);
+}
+
+
+[ circuit ]
+
+a oscillator is needed.
+
+[[ TODO ]]
+use a one transistor oscillator
+
+
+[ software ]
+http://interface.khm.de/index.php/lab/experiments/arduino-frequency-counter-library
+
+[ lcmeter ]
+
+[[ avr based ]]
+http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1231326297/75
+http://www.kerrywong.com/2010/10/16/avr-lc-meter-with-frequency-measurement/
+
+[[ pic16f based ]]
+http://hem.passagen.se/communication/lc.html
+http://py2wm.qsl.br/LC_meter/LC_meter-e.html
+http://f6ded.free.fr/index.php/en/measuring-equipment/lc-meter
+http://f6bon.albert.free.fr/lcmetre.html
+http://www.qsl.net/om3cph/counter/lcd/contribs/py2csu.html
+http://electronics-diy.com/lc_meter.php
+
+[[ lms impedance bridge ]]
+http://www.olanie.com/Ham/LCMeter/
+
+[[[ LMS algorithm ]]]
+least mean square, aims at finding the MMSE weights
+MSE: mean squared error
+
+[ cmeter ]
+http://elm-chan.org/works/cmc/report.html
