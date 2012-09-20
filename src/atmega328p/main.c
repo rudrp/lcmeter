@@ -3,7 +3,182 @@
 #include <avr/interrupt.h>
 
 
+/* note: lcd model MC21605A6W */
+#define CONFIG_LCD 0
 #define CONFIG_UART 1
+
+
+#if CONFIG_LCD
+
+/* notes: DB0:3 and RW must be grounded */
+
+#define LCD_POS_DB 0x00
+#define LCD_PORT_DB PORTC
+#define LCD_DIR_DB DDRC
+#define LCD_MASK_DB (0x0f << LCD_POS_DB)
+
+#define LCD_POS_RS 0x04
+#define LCD_PORT_RS PORTC
+#define LCD_DIR_RS DDRC
+#define LCD_MASK_RS (0x01 << LCD_POS_RS)
+
+#define LCD_POS_EN 0x05
+#define LCD_PORT_EN PORTC
+#define LCD_DIR_EN DDRC
+#define LCD_MASK_EN (0x01 << LCD_POS_EN)
+
+
+static inline void wait_50_ns(void)
+{
+  __asm__ __volatile__ ("nop\n\t");
+}
+
+static inline void wait_500_ns(void)
+{
+  /* 8 cycles at 16mhz */
+  __asm__ __volatile__ ("nop\n\t");
+  __asm__ __volatile__ ("nop\n\t");
+  __asm__ __volatile__ ("nop\n\t");
+  __asm__ __volatile__ ("nop\n\t");
+  __asm__ __volatile__ ("nop\n\t");
+  __asm__ __volatile__ ("nop\n\t");
+  __asm__ __volatile__ ("nop\n\t");
+  __asm__ __volatile__ ("nop\n\t");
+}
+
+static inline void wait_50_us(void)
+{
+  /* 800 cycles at 16mhz */
+  uint8_t x;
+  for (x = 0; x < 100; ++x) wait_500_ns();
+}
+
+static inline void wait_2_ms(void)
+{
+  wait_50_us();
+  wait_50_us();
+  wait_50_us();
+  wait_50_us();
+}
+
+static inline void wait_50_ms(void)
+{
+  /* FIXME: was _delay_ms(50), but not working */
+  uint8_t x;
+  for (x = 0; x < 25; ++x) wait_2_ms();
+}
+
+static inline void lcd_pulse_en(void)
+{
+  /* assume EN low */
+  LCD_PORT_EN |= LCD_MASK_EN;
+  wait_50_us();
+  LCD_PORT_EN &= ~LCD_MASK_EN;
+  wait_2_ms();
+}
+
+static inline void lcd_write_db4(uint8_t x)
+{
+  /* configured in 4 bits mode */
+
+  LCD_PORT_DB &= ~LCD_MASK_DB;
+  LCD_PORT_DB |= (x >> 4) /* >> LCD_POS_DB */ ;
+  lcd_pulse_en();
+
+  LCD_PORT_DB &= ~LCD_MASK_DB;
+  LCD_PORT_DB |= (x & 0xf) /* >> LCD_POS_DB */ ;
+  lcd_pulse_en();
+}
+
+static inline void lcd_write_db8(uint8_t x)
+{
+  /* configured in 8 bits mode */
+
+  /* only hi nibble transmitted, (0:3) grounded */
+  LCD_PORT_DB &= ~LCD_MASK_DB;
+  LCD_PORT_DB |= (x >> 4) /* >> LCD_POS_DB */ ;
+  lcd_pulse_en();
+}
+
+static inline void lcd_setup(void)
+{
+  LCD_DIR_DB |= LCD_MASK_DB;
+  LCD_DIR_RS |= LCD_MASK_RS;
+  LCD_DIR_EN |= LCD_MASK_EN;
+
+  LCD_PORT_DB &= ~LCD_MASK_DB;
+  LCD_PORT_RS &= ~LCD_MASK_RS;
+  LCD_PORT_EN &= ~LCD_MASK_EN;
+
+  /* small delay for the lcd to boot */
+  wait_50_ms();
+
+  /* datasheet init sequence */
+
+#define LCD_MODE_BLINK (1 << 0)
+#define LCD_MODE_CURSOR (1 << 1)
+#define LCD_MODE_DISPLAY (1 << 2)
+
+  lcd_write_db8(0x30);
+  wait_2_ms();
+  wait_2_ms();
+  wait_500_ns();
+
+  lcd_write_db8(0x30);
+  wait_2_ms();
+
+  lcd_write_db4(0x32);
+  wait_2_ms();
+
+  lcd_write_db4(0x28);
+  wait_2_ms();
+
+  lcd_write_db4((1 << 3) | LCD_MODE_DISPLAY | LCD_MODE_CURSOR);
+  wait_2_ms();
+
+  lcd_write_db4(0x01);
+  wait_2_ms();
+
+  lcd_write_db4(0x0f);
+  wait_2_ms();
+}
+
+static inline void lcd_clear(void)
+{
+  /* clear lcd */
+  lcd_write_db4(0x01);
+  wait_2_ms();
+}
+
+static inline void lcd_home(void)
+{
+  /* set cursor to home */
+  lcd_write_db4(0x02);
+  wait_2_ms();
+}
+
+static inline void lcd_set_cursor(uint8_t addr)
+{
+  lcd_write_db4((1 << 7) | addr);
+  wait_2_ms();
+}
+
+static void lcd_write(const uint8_t* s, unsigned int n)
+{
+  wait_50_ns();
+
+  LCD_PORT_RS |= LCD_MASK_RS;
+  for (; n; --n, ++s)
+  {
+    lcd_write_db4(*s);
+    wait_2_ms();
+  }
+  LCD_PORT_RS &= ~LCD_MASK_RS;
+}
+
+#endif /* CONFIG_LCD */
+
+
 #if CONFIG_UART /* uart */
 
 static inline void set_baud_rate(long baud)
@@ -322,6 +497,10 @@ int main(void)
 
   DDRD &= ~(1 << 2);
   PORTD |= 1 << 2;
+
+#if CONFIG_LCD
+  lcd_setup();
+#endif
 
 #if CONFIG_UART
   uart_setup();
