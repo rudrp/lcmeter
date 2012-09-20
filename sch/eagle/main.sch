@@ -5793,8 +5793,8 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="C2" library="SparkFun" deviceset="CAP_POL" device="PTH1" value="10u"/>
 <part name="C3" library="SparkFun" deviceset="CAP" device="KIT" value="1000p"/>
 <part name="L1" library="rcl" deviceset="L-EU" device="0207/10" value="221u"/>
-<part name="LC_OR_FREQ" library="SparkFun" deviceset="SWITCH-SPST" device="PTH"/>
-<part name="L_OR_C" library="SparkFun" deviceset="SWITCH-DPDT" device="EG2211"/>
+<part name="FREQ_SWITCH" library="SparkFun" deviceset="SWITCH-SPST" device="PTH"/>
+<part name="LC_SWITCH" library="SparkFun" deviceset="SWITCH-DPDT" device="EG2211"/>
 <part name="GND1" library="SparkFun" deviceset="GND" device=""/>
 <part name="SUPPLY1" library="supply2" deviceset="VCC" device=""/>
 <part name="POWER_CON" library="SparkFun" deviceset="M02" device="PTH"/>
@@ -5802,13 +5802,11 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="R8" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="100k"/>
 <part name="GND2" library="SparkFun" deviceset="GND" device=""/>
 <part name="FREQ_CON" library="SparkFun" deviceset="M01" device="PTH"/>
-<part name="OSC_OUT" library="SparkFun" deviceset="M01" device="PTH"/>
+<part name="MCU_CON" library="SparkFun" deviceset="M02" device="PTH"/>
 </parts>
 <sheets>
 <sheet>
 <plain>
-<text x="27.94" y="58.42" size="1.778" layer="91">arduino pin2</text>
-<text x="149.86" y="60.96" size="1.778" layer="91">arduino pin5</text>
 </plain>
 <instances>
 <instance part="IC1" gate="A" x="83.82" y="66.04"/>
@@ -5824,17 +5822,17 @@ In this library the device names are the same as the pin names of the symbols, t
 <instance part="C2" gate="G$1" x="58.42" y="68.58" rot="R270"/>
 <instance part="C3" gate="G$1" x="50.8" y="58.42"/>
 <instance part="L1" gate="G$1" x="43.18" y="68.58" rot="R90"/>
-<instance part="LC_OR_FREQ" gate="1" x="104.14" y="63.5" rot="R180"/>
-<instance part="L_OR_C" gate="G$1" x="17.78" y="68.58"/>
-<instance part="GND1" gate="1" x="15.24" y="101.6"/>
-<instance part="SUPPLY1" gate="G$1" x="15.24" y="109.22"/>
-<instance part="POWER_CON" gate="G$1" x="0" y="104.14"/>
+<instance part="FREQ_SWITCH" gate="1" x="104.14" y="63.5" rot="R180"/>
+<instance part="LC_SWITCH" gate="G$1" x="17.78" y="68.58"/>
+<instance part="GND1" gate="1" x="15.24" y="109.22"/>
+<instance part="SUPPLY1" gate="G$1" x="15.24" y="116.84"/>
+<instance part="POWER_CON" gate="G$1" x="0" y="111.76"/>
 <instance part="LC_CON" gate="G$1" x="0" y="66.04"/>
 <instance part="R8" gate="G$1" x="81.28" y="78.74"/>
 <instance part="GND2" gate="1" x="50.8" y="38.1"/>
-<instance part="FREQ_CON" gate="G$1" x="0" y="93.98"/>
-<instance part="OSC_OUT" gate="G$1" x="0" y="81.28"/>
+<instance part="FREQ_CON" gate="G$1" x="0" y="83.82"/>
 <instance part="IC1" gate="P" x="83.82" y="66.04"/>
+<instance part="MCU_CON" gate="G$1" x="0" y="96.52"/>
 </instances>
 <busses>
 </busses>
@@ -5842,13 +5840,13 @@ In this library the device names are the same as the pin names of the symbols, t
 <net name="GND" class="0">
 <segment>
 <pinref part="POWER_CON" gate="G$1" pin="1"/>
-<wire x1="7.62" y1="104.14" x2="15.24" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="111.76" x2="15.24" y2="111.76" width="0.1524" layer="91"/>
 <pinref part="GND1" gate="1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="LC_CON" gate="G$1" pin="1"/>
 <wire x1="7.62" y1="66.04" x2="7.62" y2="63.5" width="0.1524" layer="91"/>
-<pinref part="L_OR_C" gate="G$1" pin="5"/>
+<pinref part="LC_SWITCH" gate="G$1" pin="5"/>
 <wire x1="7.62" y1="63.5" x2="12.7" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="7.62" y1="63.5" x2="7.62" y2="43.18" width="0.1524" layer="91"/>
 <junction x="7.62" y="63.5"/>
@@ -5879,7 +5877,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <segment>
 <pinref part="POWER_CON" gate="G$1" pin="2"/>
 <pinref part="SUPPLY1" gate="G$1" pin="VCC"/>
-<wire x1="7.62" y1="106.68" x2="15.24" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="114.3" x2="15.24" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="R1" gate="G$1" pin="2"/>
@@ -5903,19 +5901,6 @@ In this library the device names are the same as the pin names of the symbols, t
 </net>
 <net name="C" class="0">
 <segment>
-<pinref part="L_OR_C" gate="G$1" pin="3"/>
-<wire x1="22.86" y1="68.58" x2="25.4" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="25.4" y1="68.58" x2="25.4" y2="66.04" width="0.1524" layer="91"/>
-<pinref part="L_OR_C" gate="G$1" pin="4"/>
-<wire x1="25.4" y1="66.04" x2="22.86" y2="66.04" width="0.1524" layer="91"/>
-<pinref part="L1" gate="G$1" pin="1"/>
-<wire x1="25.4" y1="68.58" x2="38.1" y2="68.58" width="0.1524" layer="91"/>
-<junction x="25.4" y="68.58"/>
-<label x="22.86" y="68.58" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="L" class="0">
-<segment>
 <pinref part="L1" gate="G$1" pin="2"/>
 <pinref part="C2" gate="G$1" pin="-"/>
 <wire x1="48.26" y1="68.58" x2="50.8" y2="68.58" width="0.1524" layer="91"/>
@@ -5923,7 +5908,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="50.8" y1="68.58" x2="53.34" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="63.5" x2="50.8" y2="68.58" width="0.1524" layer="91"/>
 <junction x="50.8" y="68.58"/>
-<pinref part="L_OR_C" gate="G$1" pin="1"/>
+<pinref part="LC_SWITCH" gate="G$1" pin="1"/>
 <wire x1="22.86" y1="73.66" x2="50.8" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="73.66" x2="50.8" y2="68.58" width="0.1524" layer="91"/>
 <label x="22.86" y="73.66" size="1.778" layer="95"/>
@@ -5933,15 +5918,8 @@ In this library the device names are the same as the pin names of the symbols, t
 <segment>
 <pinref part="LC_CON" gate="G$1" pin="2"/>
 <wire x1="7.62" y1="68.58" x2="7.62" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="L_OR_C" gate="G$1" pin="2"/>
+<pinref part="LC_SWITCH" gate="G$1" pin="2"/>
 <wire x1="7.62" y1="71.12" x2="12.7" y2="71.12" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="LC_SENSE" class="0">
-<segment>
-<pinref part="L_OR_C" gate="G$1" pin="6"/>
-<wire x1="22.86" y1="60.96" x2="33.02" y2="60.96" width="0.1524" layer="91"/>
-<label x="27.94" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -5975,7 +5953,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="83.82" y1="55.88" x2="96.52" y2="55.88" width="0.1524" layer="91"/>
 <wire x1="96.52" y1="55.88" x2="96.52" y2="66.04" width="0.1524" layer="91"/>
 <junction x="96.52" y="66.04"/>
-<pinref part="LC_OR_FREQ" gate="1" pin="S"/>
+<pinref part="FREQ_SWITCH" gate="1" pin="S"/>
 <wire x1="96.52" y1="66.04" x2="99.06" y2="66.04" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -6008,27 +5986,22 @@ In this library the device names are the same as the pin names of the symbols, t
 <net name="FREQ_SIGNAL" class="0">
 <segment>
 <pinref part="FREQ_CON" gate="G$1" pin="1"/>
-<wire x1="7.62" y1="93.98" x2="15.24" y2="93.98" width="0.1524" layer="91"/>
-<label x="7.62" y="93.98" size="1.778" layer="95"/>
+<wire x1="7.62" y1="83.82" x2="15.24" y2="83.82" width="0.1524" layer="91"/>
+<label x="7.62" y="83.82" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="IC1" gate="B" pin="-IN"/>
 <wire x1="106.68" y1="63.5" x2="124.46" y2="63.5" width="0.1524" layer="91"/>
-<pinref part="LC_OR_FREQ" gate="1" pin="P"/>
+<pinref part="FREQ_SWITCH" gate="1" pin="P"/>
 </segment>
 <segment>
-<pinref part="LC_OR_FREQ" gate="1" pin="O"/>
+<pinref part="FREQ_SWITCH" gate="1" pin="O"/>
 <wire x1="99.06" y1="60.96" x2="99.06" y2="55.88" width="0.1524" layer="91"/>
 <wire x1="99.06" y1="55.88" x2="111.76" y2="55.88" width="0.1524" layer="91"/>
 <label x="101.6" y="55.88" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="OSC_OUT" class="0">
-<segment>
-<pinref part="OSC_OUT" gate="G$1" pin="1"/>
-<wire x1="7.62" y1="81.28" x2="15.24" y2="81.28" width="0.1524" layer="91"/>
-<label x="7.62" y="81.28" size="1.778" layer="95"/>
-</segment>
+<net name="MCU_FREQ" class="0">
 <segment>
 <pinref part="R5" gate="G$1" pin="2"/>
 <wire x1="134.62" y1="78.74" x2="142.24" y2="78.74" width="0.1524" layer="91"/>
@@ -6038,6 +6011,36 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="142.24" y1="66.04" x2="152.4" y2="66.04" width="0.1524" layer="91"/>
 <junction x="142.24" y="66.04"/>
 <label x="147.32" y="66.04" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="MCU_CON" gate="G$1" pin="2"/>
+<wire x1="7.62" y1="99.06" x2="15.24" y2="99.06" width="0.1524" layer="91"/>
+<label x="7.62" y="99.06" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="MCU_LC_SENSE" class="0">
+<segment>
+<pinref part="LC_SWITCH" gate="G$1" pin="6"/>
+<wire x1="22.86" y1="60.96" x2="33.02" y2="60.96" width="0.1524" layer="91"/>
+<label x="27.94" y="60.96" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="MCU_CON" gate="G$1" pin="1"/>
+<wire x1="7.62" y1="96.52" x2="15.24" y2="96.52" width="0.1524" layer="91"/>
+<label x="7.62" y="96.52" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="L" class="0">
+<segment>
+<pinref part="LC_SWITCH" gate="G$1" pin="3"/>
+<wire x1="22.86" y1="68.58" x2="25.4" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="25.4" y1="68.58" x2="25.4" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="LC_SWITCH" gate="G$1" pin="4"/>
+<wire x1="25.4" y1="66.04" x2="22.86" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="L1" gate="G$1" pin="1"/>
+<wire x1="25.4" y1="68.58" x2="38.1" y2="68.58" width="0.1524" layer="91"/>
+<junction x="25.4" y="68.58"/>
+<label x="22.86" y="68.58" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
