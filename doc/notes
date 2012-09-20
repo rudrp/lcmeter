@@ -34,7 +34,16 @@ l_ref = 1 / (4 * pi * c_ref * f_0^2);
 
 [ circuit ]
 
-a oscillator is needed.
+refer to eagle directory
+
+
+[ calibration mode ]
+when the calibration button is pressed, capacitor or inductor hardcoded
+theoritical values are corrected. the lc sense switch is used to select
+which one to calibrate. when calibrating inductance, the measurement
+pins must be shorted. when calibrating for capacitance, they must be
+floating.
+
 
 [[ TODO ]]
 use a one transistor oscillator
