@@ -430,13 +430,15 @@ static inline double hfc_to_hz(uint32_t counter)
 
 /* frequency conversion */
 
-static const double lref = 331; /* uh */
-static const double cref = 1000; /* pf */
-#if 0
-static const double fref = 276635; /* hz */
-#else
-static const double fref = 282020;
-#endif
+/* theoritical values */
+#define lth 331 /* uh */
+#define cth 1000 /* pf */
+#define fth 276634.602 /* hz */
+
+/* calibrated values */
+static double lref = lth; /* uh */
+static double cref = cth; /* pf */
+static double fref = fth; /* hz */
 
 static double freq_to_xxx(double f, double xref)
 {
@@ -459,6 +461,14 @@ static double freq_to_l(double f)
 
 int main(void)
 {
+  uint8_t is_l;
+  uint8_t is_calib;
+  uint32_t counter;
+  const uint8_t* s;
+  double f;
+  double x;
+  unsigned int len;
+
 #if CONFIG_LCD
   lcd_setup();
 #endif
@@ -467,47 +477,51 @@ int main(void)
   uart_setup();
 #endif
 
+  sei();
+
   /* l or c mode sense */
   DDRD &= ~(1 << 2);
   PORTD |= 1 << 2;
 
-  sei();
+  /* calibrate button */
+  DDRD &= ~(1 << 3);
+  PORTD |= 1 << 3;
 
+  /* measure */
   while (1)
   {
-    uint8_t isl = 0;
+    is_l = 0;
+    if ((PIND & (1 << 2)) == 0) is_l = 1;
 
-    if (PIND & (1 << 2)) isl = 0;
-    else isl = 1;
+    is_calib = 0;
+    if ((PIND & (1 << 3)) == 0) is_calib = 1;
 
-#if 0
-    uart_write((uint8_t*)"0x", 2);
-    uart_write(uint32_to_string(hfc_start_wait()), 8);
-    uart_write((uint8_t*)"\r\n", 2);
-#else
-    const uint8_t* s;
-    const uint32_t c = hfc_start_wait();
-    const double f = hfc_to_hz(c);
-    const double x = isl ? freq_to_l(f) : freq_to_c(f);
-    unsigned int len;
+    counter = hfc_start_wait();
+    f = hfc_to_hz(counter);
+    x = is_l ? freq_to_l(f) : freq_to_c(f);
+
+    /* calibration */
+    if (is_calib)
+    {
+      uart_write((uint8_t*)"calib\r\n", 7);
+
+      if (is_l) lref = lth + x;
+      else cref = cth + x;
+      fref = f;
+    }
 
     len = double_to_string(f, &s);
     uart_write(s, len);
     uart_write((uint8_t*)" hz\r\n", 5);
 
-    if (isl) uart_write((uint8_t*)"L", 1);
+    if (is_l) uart_write((uint8_t*)"L", 1);
     else uart_write((uint8_t*)"C", 1);
     uart_write((uint8_t*)" == ", 4);
     len = double_to_string(x, &s);
     uart_write((uint8_t*)s, len);
     uart_write((uint8_t*)"\r\n", 2);
 
-    len = double_to_string(c, &s);
-    uart_write((uint8_t*)s, len);
     uart_write((uint8_t*)"\r\n", 2);
-
-    uart_write((uint8_t*)"\r\n", 2);
-#endif
   }
 
   return 0;
