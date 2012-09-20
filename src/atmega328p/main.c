@@ -441,19 +441,19 @@ static const double fref = 282020;
 static double freq_to_xxx(double f, double xref)
 {
   const double x = fref / f;
-  return (x * x - 1) * xref;
+  return (x * x - 1.0) * xref;
 }
 
 static double freq_to_c(double f)
 {
   /* frequency (hz) to capacitance (pf) */
-  return freq_to_xxx(f, cref) + cref;
+  return freq_to_xxx(f, cref);
 }
 
 static double freq_to_l(double f)
 {
   /* frequency (hz) to inductance (uh) */
-  return freq_to_xxx(f, lref) + lref;
+  return freq_to_xxx(f, lref);
 }
 
 
@@ -486,7 +486,8 @@ int main(void)
     uart_write((uint8_t*)"\r\n", 2);
 #else
     const uint8_t* s;
-    const double f = hfc_to_hz(hfc_start_wait());
+    const uint32_t c = hfc_start_wait();
+    const double f = hfc_to_hz(c);
     const double x = isl ? freq_to_l(f) : freq_to_c(f);
     unsigned int len;
 
@@ -499,6 +500,12 @@ int main(void)
     uart_write((uint8_t*)" == ", 4);
     len = double_to_string(x, &s);
     uart_write((uint8_t*)s, len);
+    uart_write((uint8_t*)"\r\n", 2);
+
+    len = double_to_string(c, &s);
+    uart_write((uint8_t*)s, len);
+    uart_write((uint8_t*)"\r\n", 2);
+
     uart_write((uint8_t*)"\r\n", 2);
 #endif
   }
