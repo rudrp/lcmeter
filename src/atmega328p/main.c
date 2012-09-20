@@ -457,47 +457,8 @@ static double freq_to_l(double f)
 }
 
 
-/* test application. configure timer2 for pwm
-   generation and use its output (pb3) as the
-   hfc input (pd4).
- */
-
 int main(void)
 {
-#if 0 /* TIM2_PWM */
-
-  /* tim2 fast pwm mode */
-
-  DDRB |= 1 << 3;
-  TIMSK2 = 0;
-  TCNT2 = 0;
-
-  /* fpwm = (16 * 10^6) / (OCR2A * 2 * prescal) */
-#if 0 /* prescal = 1, fpwm = 41025.64102 */
-  OCR2A = 195;
-  TCCR2B = (1 << 3) | (1 << 0);
-  TCCR2A = (1 << 6) | (3 << 0);
-#else /* hires pwm, prescal = 1024 */
-  OCR2A = 255; /* 30.63725490196078431372 */
-  OCR2A = 240; /* 32.55208333333333333333 */
-  OCR2A = 230; /* 33.96739130434782608695 */
-  OCR2A = 220; /* 35.51136363636363636363 */
-  OCR2A = 210; /* 37.20238095238095238095 */
-  OCR2A = 200; /* 39.06250000000000000000 */
-  OCR2A = 20; /* 390.6250000000000000000 */
-  OCR2A = 10; /* 781.2500000000000000000 */
-  OCR2A = 2; /* 3906.25000000000000000000 */
-  OCR2A = 1; /* 7812.50000000000000000000 */
-
-  TCCR2B = (1 << 3) | (7 << 0);
-  TCCR2A = (1 << 6) | (3 << 0);
-#endif
-
-#endif /* TIM2_PWM */
-
-  DDRD &= ~(1 << 2);
-  PORTD |= 1 << 2;
-
 #if CONFIG_LCD
   lcd_setup();
 #endif
@@ -505,6 +466,10 @@ int main(void)
 #if CONFIG_UART
   uart_setup();
 #endif
+
+  /* l or c mode sense */
+  DDRD &= ~(1 << 2);
+  PORTD |= 1 << 2;
 
   sei();
 
