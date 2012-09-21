@@ -5905,9 +5905,9 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <label x="7.62" y="96.52" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="LC_SWITCH_CON" gate="A" pin="6"/>
-<wire x1="60.96" y1="129.54" x2="73.66" y2="129.54" width="0.1524" layer="91"/>
-<label x="68.58" y="129.54" size="1.778" layer="95"/>
+<pinref part="LC_SWITCH_CON" gate="A" pin="2"/>
+<wire x1="60.96" y1="134.62" x2="73.66" y2="134.62" width="0.1524" layer="91"/>
+<label x="68.58" y="134.62" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LM_IN" class="0">
@@ -5983,14 +5983,14 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <label x="30.48" y="129.54" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="LC_SWITCH_CON" gate="A" pin="2"/>
-<wire x1="60.96" y1="134.62" x2="73.66" y2="134.62" width="0.1524" layer="91"/>
-<label x="68.58" y="134.62" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="L1" gate="G$1" pin="1"/>
 <wire x1="33.02" y1="88.9" x2="48.26" y2="88.9" width="0.1524" layer="91"/>
 <label x="30.48" y="88.9" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="LC_SWITCH_CON" gate="A" pin="6"/>
+<wire x1="60.96" y1="129.54" x2="73.66" y2="129.54" width="0.1524" layer="91"/>
+<label x="68.58" y="129.54" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MCU_FREQ_CNT" class="0">
