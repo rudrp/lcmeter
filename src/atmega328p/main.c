@@ -4,7 +4,7 @@
 
 
 /* note: lcd model MC21605A6W */
-#define CONFIG_LCD 0
+#define CONFIG_LCD 1
 #define CONFIG_UART 1
 
 
@@ -133,7 +133,7 @@ static inline void lcd_setup(void)
   lcd_write_db4(0x28);
   wait_2_ms();
 
-  lcd_write_db4((1 << 3) | LCD_MODE_DISPLAY | LCD_MODE_CURSOR);
+  lcd_write_db4((1 << 3) | LCD_MODE_DISPLAY);
   wait_2_ms();
 
   lcd_write_db4(0x01);
@@ -465,12 +465,15 @@ int main(void)
   uint8_t is_calib;
   uint32_t counter;
   const uint8_t* s;
-  double f;
+  double f = 1;
+  double prev_x = 0;
   double x;
   unsigned int len;
 
 #if CONFIG_LCD
   lcd_setup();
+  lcd_clear();
+  lcd_home();
 #endif
 
 #if CONFIG_UART
@@ -503,25 +506,65 @@ int main(void)
     /* calibration */
     if (is_calib)
     {
+#if CONFIG_UART
       uart_write((uint8_t*)"calib\r\n", 7);
-
+#endif
       if (is_l) lref = lth + x;
       else cref = cth + x;
       fref = f;
     }
 
+    /* avoid update */
+    if (prev_x == x) continue ;
+
+#if CONFIG_UART
     len = double_to_string(f, &s);
     uart_write(s, len);
     uart_write((uint8_t*)" hz\r\n", 5);
+#endif
 
-    if (is_l) uart_write((uint8_t*)"L", 1);
-    else uart_write((uint8_t*)"C", 1);
-    uart_write((uint8_t*)" == ", 4);
+#if CONFIG_LCD
+    lcd_clear();
+    lcd_home();
+#endif
+
+    if (is_l)
+    {
+#if CONFIG_UART
+      uart_write((uint8_t*)"L", 1);
+#endif
+#if CONFIG_LCD
+      lcd_write((uint8_t*)"L", 1);
+#endif
+    }
+    else
+    {
+#if CONFIG_UART
+      uart_write((uint8_t*)"C", 1);
+#endif
+#if CONFIG_LCD
+      lcd_write((uint8_t*)"C", 1);
+#endif
+    }
+
+#if CONFIG_UART || CONFIG_LCD
     len = double_to_string(x, &s);
+#endif
+
+#if CONFIG_UART
+    uart_write((uint8_t*)" == ", 4);
     uart_write((uint8_t*)s, len);
     uart_write((uint8_t*)"\r\n", 2);
-
     uart_write((uint8_t*)"\r\n", 2);
+#endif
+
+#if CONFIG_LCD
+    lcd_write((uint8_t*)" == ", 4);
+    /* avoid lcd overflow */
+    lcd_write((uint8_t*)s, len > 10 ? 10 : len);
+#endif
+
+    prev_x = x;
   }
 
   return 0;
